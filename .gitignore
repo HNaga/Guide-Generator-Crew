@@ -1,4 +1,8 @@
+.DS_Store
 .env
 __pycache__/
 lib/
-.DS_Store
+tests/
+Docs/
+output/
+*.bak
