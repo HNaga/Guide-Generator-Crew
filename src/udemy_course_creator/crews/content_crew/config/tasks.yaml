@@ -1,0 +1,34 @@
+write_lecture_content:
+  description: |
+    Write detailed educational content for the lecture titled "{lecture_title}" with objective: {lecture_objective}
+
+    Use the following inputs:
+    - Section Description: {section_description}
+    - Audience Level: {audience_level}
+    - Previous Sections: {previous_sections}
+
+    Ensure the content builds upon previously covered concepts and maintains consistent tone and depth.
+  expected_output: Well-structured Markdown content for the lecture.
+  agent: content_writer
+
+review_lecture_content:
+  description: |
+    Review and improve the following lecture content:
+
+    
+
+    Target audience: {audience_level} level learners
+
+    Previously written sections:
+    {previous_sections}
+
+    Your review should:
+    1. Fix any grammatical or spelling errors
+    2. Improve clarity and readability
+    3. Ensure content is comprehensive and accurate
+    4. Verify consistency with previously written sections
+    5. Enhance the structure and flow
+    6. Maintain tone and depth appropriate for the audience level
+  expected_output: An improved version of the lecture content
+  agent: content_reviewer
+  

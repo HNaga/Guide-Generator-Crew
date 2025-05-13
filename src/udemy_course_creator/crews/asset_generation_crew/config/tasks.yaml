@@ -1,0 +1,15 @@
+generate_lecture_slides:
+  description: |
+    Generate presentation slides for the lecture titled "{lecture_title}" with objective: {lecture_objective}
+
+    Use the following inputs:
+    - Lecture Content: {lecture_content}
+    - Section Description: {section_description}
+    - Audience Level: {audience_level}
+
+    Format:
+    - Use clear headings and bullet points
+    - Include diagrams, code snippets, and visuals where appropriate
+    - Keep it concise (5–8 slides max per lecture)
+  expected_output: Well-structured Markdown slides
+  agent: slide_generator

@@ -1,0 +1,31 @@
+design_course_structure:
+  description: |
+    Design a full course structure including sections and lectures based on:
+    - Course Title: {course_title}
+    - Main Goal: {course_goal}
+    - Description Points: {description_points}
+    - Target Audience: {target_audience}
+
+    Output should include:
+    - Sections with titles and descriptions
+    - Lectures per section with objectives and activities
+  expected_output: A well-structured Markdown course outline
+  agent: curriculum_designer
+
+write_lecture_content:
+  description: |
+    Write comprehensive lecture content for:
+    - Lecture Title: {lecture_title}
+    - Lecture Objective: {lecture_objective}
+    - Section Description: {section_description}
+    - Audience Level: {audience_level}
+    - Previous Sections: {previous_sections}
+  expected_output: Detailed lecture content in Markdown format
+  agent: content_writer
+
+review_lecture_content:
+  description: |
+    Review the lecture content for quality, accuracy, and alignment with objectives.
+    Ensure it meets the needs of the target audience: {audience_level}
+  expected_output: Review feedback and suggestions for improvement
+  agent: content_reviewer

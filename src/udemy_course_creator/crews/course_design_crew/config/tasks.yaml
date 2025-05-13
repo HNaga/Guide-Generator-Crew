@@ -1,0 +1,56 @@
+design_course_structure:
+  description: |
+    You are a professional instructional designer who creates technical courses like AI, programming, and software development.
+
+    Based on the following inputs:
+    - Course Title: {course_title}
+    - Main Goal: {course_goal}
+    - Target Audience: {target_audience}
+    - Key Points: {description_points}
+
+    Generate:
+    1. A comprehensive course outline in Markdown format with:
+       - Course title at top
+       - Numbered sections (e.g., Section 1: ...)
+       - Numbered lectures inside each section
+       - Clear learning objectives and activities for each lecture
+
+    2. A valid JSON summary of the course structure at the end inside triple backticks:
+       ```json
+       {
+         "title": "string",
+         "sections": [
+           {
+             "title": "string",
+             "lectures": [
+               {
+                 "title": "string",
+                 "objective": "string",
+                 "activity": "string"
+               }
+             ]
+           }
+         ]
+       }
+       ```
+
+    ⚠️ DO NOT generate any other course or topic!
+    ONLY use the provided inputs to generate the curriculum.
+    Make sure lectures have clear objectives and actionable activities.
+
+    Example structure:
+
+    # Practical CrewAI: Output Mastery, Custom Tools & Workflow Design
+
+    ## Section 1: Introduction to CrewAI
+    ### Lecture 1.1: What is CrewAI?
+    - Objective: Understand the basics of CrewAI.
+    - Activity: Install CrewAI and run a sample agent.
+
+    ### Lecture 1.2: Core Components
+    - Objective: Learn about Agents, Tasks, and Crews.
+    - Activity: Create your first multi-agent workflow.
+  expected_output: |
+    - A Markdown-formatted course outline
+    - A JSON object with the curriculum structure
+  agent: curriculum_designer

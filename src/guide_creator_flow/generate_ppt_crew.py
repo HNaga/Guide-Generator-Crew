@@ -49,7 +49,8 @@ def powerpoint_generator_tool(slides_data: list) -> str:
             # Ensure slide is a dictionary
             if not isinstance(slide, dict):
                 return f"Error: Slide {i} is not a dictionary"
-
+    except Exception as e:
+        return f"Error generating PowerPoint: {str(e)}"
 # Custom Tool: Image Log Generator (unchanged)
 @tool
 def image_log_tool(image_data: list) -> str:
