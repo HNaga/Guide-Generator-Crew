@@ -1,5 +1,10 @@
 from flows.udemy_course_flow import UdemyCourseCreationFlow
+#from flows.test_slide_generation_only import UdemyCourseCreationFlow
+import sys
+import io
 
+# Ensure UTF-8 support in Windows console
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # ---------------------------
 # Predefined Course Inputs
 # ---------------------------

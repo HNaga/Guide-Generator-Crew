@@ -13,3 +13,27 @@ generate_lecture_slides:
     - Keep it concise (5–8 slides max per lecture)
   expected_output: Well-structured Markdown slides
   agent: slide_generator
+generate_lecture_slides:
+  description: |
+    Convert the following lecture content into presentation-style slides.
+    
+    Use these slide formats:
+    - Title Slide
+    - Concept Slide (for explanations)
+    - Code Slide (for code examples)
+    - Summary Slide
+    
+    Input:
+    - Lecture Title: {lecture_title}
+    - Section Description: {section_description}
+    - Audience Level: {audience_level}
+    - Lecture Content: {lecture_content}
+    
+    Output:
+    - Structured Markdown with clear slide separation
+    - Numbered slides
+    - Proper use of slide types
+    
+    Do NOT return any extra explanation — just the slides.
+  expected_output: Well-structured Markdown slides using slide templates
+  agent: slide_generator

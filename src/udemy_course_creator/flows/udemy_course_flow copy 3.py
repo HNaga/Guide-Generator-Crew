@@ -1,8 +1,6 @@
-# flows/udemy_course_flow.py
-
 from crewai.flow.flow import Flow, start, listen
 from models.curriculum_model import CourseState, Curriculum
-#from typing import List
+#from typing import List, Dict
 import os
 import json
 from crews.course_design_crew.course_design_crew import CourseDesignCrew
@@ -11,7 +9,6 @@ from crews.asset_generation_crew.asset_generation_crew import AssetGenerationCre
 from tools.file_manager_tool import save_file
 from utils.parser import parse_curriculum_markdown
 from utils.helpers import sanitize_filename
-from utils.pptx_converter import convert_md_to_pptx
 
 
 class UdemyCourseCreationFlow(Flow[CourseState]):
@@ -58,6 +55,7 @@ class UdemyCourseCreationFlow(Flow[CourseState]):
         Fall back to Markdown parsing if needed.
         """
         print("🔍 Attempting to extract curriculum data...")
+        print("Raw LLM Output:\n", markdown_text[:500] + "...")
 
         try:
             json_start = markdown_text.rfind("```json") + 6
@@ -90,7 +88,6 @@ class UdemyCourseCreationFlow(Flow[CourseState]):
         for section in self.state.curriculum.sections:
             section_folder = sanitize_filename(section.title)
             section_dir = os.path.join("output", "lectures", section_folder)
-            os.makedirs(section_dir, exist_ok=True)
             print(f"📁 Saving Section: {section.title} → {section_dir}")
 
             for lecture in section.lectures:
@@ -121,35 +118,25 @@ class UdemyCourseCreationFlow(Flow[CourseState]):
             print("⚠️ No curriculum data found. Skipping slide generation.")
             return self.state
 
-        # Encodings to try when reading lecture files
-        encodings_to_try = ['utf-8', 'utf-8-sig', 'latin-1', 'cp1252']
-
         for section in self.state.curriculum.sections:
             section_folder = sanitize_filename(section.title)
-            slide_section_dir = os.path.join("output", "slides", section_folder)
-            os.makedirs(slide_section_dir, exist_ok=True)
+            section_dir = os.path.join("output", "slides", section_folder)
+            os.makedirs(section_dir, exist_ok=True)
 
             for lecture in section.lectures:
                 lecture_title = lecture.title
                 print(f"📐 Creating slides for: {lecture_title}")
 
-                # Build correct lecture file path
+                # Build correct lecture file path inside section folder
                 lecture_filename = f"{sanitize_filename(lecture.title)}.md"
                 lecture_path = os.path.join("output", "lectures", section_folder, lecture_filename)
 
-                # Read lecture content with fallback encodings
-                lecture_content = None
-                for encoding in encodings_to_try:
-                    try:
-                        with open(lecture_path, 'r', encoding=encoding) as f:
-                            lecture_content = f.read()
-                        print(f"📄 Loaded lecture content from: {lecture_path} using {encoding}")
-                        break
-                    except UnicodeDecodeError:
-                        continue
-
-                if not lecture_content:
-                    print(f"❌ Failed to read lecture: {lecture_path}")
+                try:
+                    with open(lecture_path, 'r', encoding='utf-8') as f:
+                        lecture_content = f.read()
+                    print(f"📄 Loaded lecture content from: {lecture_path}")
+                except FileNotFoundError:
+                    print(f"⚠️ Lecture file not found: {lecture_path}")
                     continue
 
                 # Run slide generation crew
@@ -162,24 +149,15 @@ class UdemyCourseCreationFlow(Flow[CourseState]):
                     "lecture_content": lecture_content
                 })
 
-                # Store generated slides
-                slides_md = result.raw
-
-                if not slides_md.strip():
+                if not result.raw.strip():
                     raise ValueError(f"⚠️ Empty content returned for '{lecture.title}'")
 
-                # Save Markdown Slides
-                slide_md_path = os.path.join(slide_section_dir, lecture_filename)
-                save_file(slide_section_dir, lecture_filename, slides_md)
-                print(f"💾 Markdown slides saved to: {slide_md_path}")
+                # Save slide content using sanitized name
+                slide_filename = f"{sanitize_filename(lecture.title)}.md"
+                save_file(section_dir, slide_filename, result.raw)
+                print(f"💾 Slides saved to: {os.path.join(section_dir, slide_filename)}")
 
-                # Save PowerPoint (.pptx) version
-                slide_pptx_path = os.path.join(slide_section_dir,f"{sanitize_filename(lecture.title)}.pptx"
-)
-                convert_md_to_pptx(slides_md, slide_pptx_path)
-                print(f"📊 PowerPoint slides saved to: {slide_pptx_path}")
-
-        print("✅ Slides generated and saved in both Markdown and PPTX formats.")
+        print("✅ Slides generated and saved in structured format.")
         return self.state
 
     @listen(generate_lecture_slides)
@@ -191,7 +169,6 @@ class UdemyCourseCreationFlow(Flow[CourseState]):
             print(f"Found {total_lectures} lectures")
             print("Lectures written: output/lectures/<section>/<lecture>.md")
             print("Slides generated: output/slides/<section>/<lecture>.md")
-            print("PowerPoint versions: output/slides/<section>/<lecture>.pptx")
         else:
             print("❌ Curriculum not available. Check earlier steps.")
 

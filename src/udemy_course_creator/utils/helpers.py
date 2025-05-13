@@ -1,6 +1,6 @@
 def sanitize_filename(name: str) -> str:
-    """Replace invalid filename characters with empty string"""
+    """Replace invalid characters and spaces with safe ones"""
     invalid_chars = r'<>:"/\|?*'
     for char in invalid_chars:
-        name = name.replace(char, "")
-    return name.strip().replace(" ", "_")
+        name = name.replace(char, '')
+    return name.strip().replace(' ', '_')
